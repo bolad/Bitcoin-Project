@@ -17,6 +17,15 @@ class Block {
   static genesis(){
     return new this('Genesis time', '----', 'f1r57-h45h', []);
   }
+
+  //Add the ability to generate new blocks based on the last block and some given data to store
+  static mineBlock(lastBlock, data) {
+    const timestamp = Date.now();
+    const lastHash = lastBlock.hash;
+    const hash = 'todo-later';
+
+    return new this(timestamp, lastHash, hash, data);
+  }
 }
 
 /*
