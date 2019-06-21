@@ -1,3 +1,5 @@
+const SHA256 = require('crypto-js/sha256');
+
 class Block {
   constructor(timestamp, lastHash, hash, data) {
     this.timestamp = timestamp;
@@ -22,9 +24,14 @@ class Block {
   static mineBlock(lastBlock, data) {
     const timestamp = Date.now();
     const lastHash = lastBlock.hash;
-    const hash = 'todo-later';
+    const hash = Block.hash(timestamp, lastHash, data);
 
     return new this(timestamp, lastHash, hash, data);
+  }
+
+  //This function will represent the unique data we want to generate the hash for
+  static hash(timestamp, lastHash, data){
+    return SHA256(`${timestamp}${lastHash}${data}`).toString();
   }
 }
 
