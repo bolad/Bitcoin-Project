@@ -33,6 +33,13 @@ class Block {
   static hash(timestamp, lastHash, data){
     return SHA256(`${timestamp}${lastHash}${data}`).toString();
   }
+
+  //returns a generated hash for the current block based on the block implementation
+  static blockHash(block) {
+    //grab all values needed to generate hash
+    const {timestamp, lastHash, data} = block;
+    return Block.hash(timestamp, lastHash, data);
+  }
 }
 
 /*
