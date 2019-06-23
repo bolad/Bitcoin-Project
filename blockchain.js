@@ -13,7 +13,7 @@ class Blockchain {
     //generate a new block using the mineBlock function
     const block = Block.mineBlock(lastBlock, data);
 
-    //end new block to the end of te chain array
+    //add new block to the end of the chain array
     this.chain.push(block);
 
     return block;
@@ -25,7 +25,7 @@ class Blockchain {
     if(JSON.stringify(chain[0]) !== JSON.stringify(Block.genesis())) return false;
 
     // run validations on every following block after the genesis block in the incoming chain
-    for (let i=1; i < chain.length(); i++){
+    for (let i=1; i < chain.length; i++){
       const block = chain[i];
       const lastBlock = chain[i-1];
       if(block.lastHash !== lastBlock.hash || block.hash !== Block.blockHash(block)) {
