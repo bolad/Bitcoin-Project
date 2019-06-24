@@ -1,10 +1,17 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const Blockchain = require('../blockchain');
 const HTTP_PORT = process.env.HTTP_PORT || 3001;
 
 //call the default express function and assign it to app
 const app = express();
 const bc = new Blockchain();
+
+/*
+To use the body parser json middleware function, we use app.use() function. This will
+allow us to receive json within post requests
+*/
+app.use(bodyParser.json());
 
 /*
 Add the first end point for our API that interacts with the blockchain instance(bc).
@@ -18,6 +25,14 @@ app.get('/blocks', (request, response) => {
   response.json(bc.chain);
 });
 
+//Allows users to add data to the blockchain
+app.post('/mine', (request, response) => {
+const block = bc.addBlock(request.body.data);
+console.log(`New block added: ${block.toString()}`);
+
+//Respond with updated chain of blocks which includes user's new blocks
+response.redirect('/blocks');
+});
 /*
 Make sure your application is running using app.listen() and add two scripts to the package.json
 file which will allow us to start the API up.
