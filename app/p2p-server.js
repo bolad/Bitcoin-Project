@@ -35,13 +35,41 @@ class P2pServer {
     we're looking for. The second is a callback function with a socket object created as a result of
     this connection
     */
-    server.on('connection', socket() => (this.connectSocket(socket));
-    console.log(`Listenig for peer-to-peer connections on: ${P2P_PORT}`);
+    server.on('connection', socket => this.connectSocket(socket));
+
+    this.connectToPeers();
+
+    console.log(`Listening for peer-to-peer connections on: ${P2P_PORT}`);
+  }
+
+  //handle later instances of the application that wil connect to peers that are specified when started
+  connectToPeers() {
+    peers.forEach(peer => {
+      // example of a peer addres: ws://localhost:5001
+      const socket = new Websocket(peer);
+
+      //open another event listener for the 'open' event for this socket
+      socket.on('open', () => this.connectSocket(socket));
+    })
   }
 
   //push socket into our array of sockets
   connectSocket(socket) {
     this.sockets.push(socket);
     console.log("Socket connected");
+    this.meassageHandler(socket);
+    socket.send(JSON.stringify(this.blockchain.chain));
+  }
+
+  //send message events to sockets
+  meassageHandler(socket) {
+    socket.on('message', message => {
+
+      //transform the stringified json into a javascript object stored in data variable
+      const data = JSON.parse(message);
+      console.log('data', data);
+    });
   }
 }
+
+module.exports = P2pServer;
