@@ -58,7 +58,7 @@ class P2pServer {
     this.sockets.push(socket);
     console.log("Socket connected");
     this.meassageHandler(socket);
-    socket.send(JSON.stringify(this.blockchain.chain));
+    this.sendChain(socket);
   }
 
   //send message events to sockets
@@ -67,8 +67,19 @@ class P2pServer {
 
       //transform the stringified json into a javascript object stored in data variable
       const data = JSON.parse(message);
-      console.log('data', data);
+
+      this.blockchain.replaceChain(data);
     });
+  }
+
+  //send stringified blockchoin object
+  sendChain(socket) {
+    socket.send(JSON.stringify(this.blockchain.chain));
+  }
+
+  //send the updated blockchain of the current instance to all the socket peers
+  syncChains() {
+    this.sockets.forEach(socket => {this.sendChain(socket)});
   }
 }
 

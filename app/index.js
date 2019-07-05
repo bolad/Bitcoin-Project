@@ -35,6 +35,9 @@ app.post('/mine', (request, response) => {
 const block = bc.addBlock(request.body.data);
 console.log(`New block added: ${block.toString()}`);
 
+//send a synchronization everytime a mine occurs
+p2pServer.syncChains();
+
 //Respond with updated chain of blocks which includes user's new blocks
 response.redirect('/blocks');
 });
