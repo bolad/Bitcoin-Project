@@ -1,7 +1,6 @@
 const SHA256 = require('crypto-js/sha256');
+const { DIFFICULTY}  = require('../config');
 
-//Declare the overall difficulty of the system
-const DIFFICULTY = 4;
 class Block {
   constructor(timestamp, lastHash, hash, data, nonce) {
     this.timestamp = timestamp;
@@ -33,7 +32,7 @@ class Block {
     /*
     continue generating new hash values based on new nonce values by running a loop that increments
     the nonce value and generates a new hash until the hash passes our condition of starting with the
-    right number of leading zeros according to the difficulty
+    right number of leading zeros according to the difficulty. eg for DIFFICULTY = 6, Hash = 000000haxi2910jhyd
     */
 
     do {

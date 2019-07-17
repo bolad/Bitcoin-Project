@@ -1,5 +1,6 @@
 // get access to the Block class
 const Block = require('./block');
+const { DIFFICULTY}  = require('../config');
 
 describe('Block', () => {
 
@@ -29,6 +30,12 @@ describe('Block', () => {
   //test to ensure that the last hash is set properly
   it('sets the `lastHash` to match the hash of the last block', () => {
     expect(block.lastHash).toEqual(lastBlock.hash);
+  });
+
+  //check that its generates a hash matching the difficulty with the leading zeros
+  it("generates a hsh that matches the difficulty", () => {
+    expect(block.hash.substring(0, DIFFICULTY)).toEqual('0'.repeat(DIFFICULTY));
+    console.log(block.toString());
   });
 
 });
