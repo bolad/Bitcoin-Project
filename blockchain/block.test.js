@@ -33,9 +33,19 @@ describe('Block', () => {
   });
 
   //check that its generates a hash matching the difficulty with the leading zeros
-  it("generates a hsh that matches the difficulty", () => {
-    expect(block.hash.substring(0, DIFFICULTY)).toEqual('0'.repeat(DIFFICULTY));
+  it('generates a hash that matches the difficulty', () => {
+    expect(block.hash.substring(0, block.difficulty)).toEqual('0'.repeat(block.difficulty));
     console.log(block.toString());
+  });
+
+  //test that difficulty is lowered if mining time is too slow
+  it('lowers the difficulty for slowly mined blocks', () => {
+    expect(Block.adjustDifficulty(block, block.timestamp+360000)).toEqual(block.difficulty - 1);
+  });
+
+  it('raises the difficulty for quickly mined blocks', () => {
+    expect(Block.adjustDifficulty(block, block.timestamp+1)).toEqual(block.difficulty + 1);
+
   });
 
 });

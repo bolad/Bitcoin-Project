@@ -19,7 +19,7 @@ describe('Blockchain', () => {
      expect(bc.chain[bc.chain.length-1].data).toEqual(data);
    });
 
-   it("validates a valid chain", () => {
+   it('validates a valid chain', () => {
      //add a block to the second blockchain instance and store the data 'foo' in it
      bc2.addBlock('foo');
 
@@ -27,14 +27,14 @@ describe('Blockchain', () => {
      expect(bc.isValidChain(bc2.chain)).toBe(true);
    });
 
-   it("invalidates a chain with a corrupt genesis block", () => {
+   it('invalidates a chain with a corrupt genesis block', () => {
      //let's corrupt the first element of the second Blockchain by inserting wrong data
      bc2.chain[0].data = 'bad data';
 
      expect(bc.isValidChain(bc2.chain)).toBe(false);
    });
 
-   it("invalidates a corrupt chain", () => {
+   it('invalidates a corrupt chain', () => {
      // Add a bad block which isn't the genesis block
      bc2.addBlock('foo');
 
@@ -44,14 +44,14 @@ describe('Blockchain', () => {
     expect(bc.isValidChain(bc2.chain)).toBe(false);
   });
 
-  it("replaces the chain with a valid chain", () => {
+  it('replaces the chain with a valid chain', () => {
     bc2.addBlock("goo");
     bc.replaceChain(bc2.chain);
 
     expect(bc.chain).toEqual(bc2.chain);
   });
 
-  it("does not replace the chain with one of less than or eqaul to length", () => {
+  it('does not replace the chain with one of less than or eqaul to length', () => {
     bc.addBlock('foo');//this chain has two blocks now; the genesis block + this new block
     bc.replaceChain(bc2.chain);
 
