@@ -1,32 +1,39 @@
 const SHA256 = require('crypto-js/sha256');
-const { DIFFICULTY}  = require('../config');
+const { DIFFICULTY, MINE_RATE}  = require('../config');
 
 class Block {
-  constructor(timestamp, lastHash, hash, data, nonce) {
+  constructor(timestamp, lastHash, hash, data, nonce, difficulty) {
     this.timestamp = timestamp;
     this.lastHash = lastHash;
     this.hash = hash;
     this.data = data;
     this.nonce = nonce;
+    this.difficulty = difficulty || DIFFICULTY;
   }
 
   toString() {
     return `Block -
-      Timestamp: ${this.timestamp}
-      Last Hash: ${this.lastHash.substring(0, 10)}
-      Hash     : ${this.hash.substring(0, 10)}
-      Nonce    : ${this.nonce}
-      Data     : ${this.data}`;
+      Timestamp : ${this.timestamp}
+      Last Hash : ${this.lastHash.substring(0, 10)}
+      Hash      : ${this.hash.substring(0, 10)}
+      Nonce     : ${this.nonce}
+      Difficulty: ${this.difficulty}
+      Data      : ${this.data}`;
   }
 
   static genesis(){
-    return new this('Genesis time', '----', 'f1r57-h45h', []);
+    return new this('Genesis time', '----', 'f1r57-h45h', [], DIFFICULTY);
   }
 
   //Add the ability to generate new blocks based on the last block and some given data to store
   static mineBlock(lastBlock, data) {
     let hash, timestamp;
     const lastHash = lastBlock.hash;
+
+    //declare alocal difficulty variable that is assigned to the difficulty key
+    //in the last block object using E6 syntax
+    let { difficulty } = lastBlock;
+
     let nonce = 0;
 
     /*
@@ -38,22 +45,23 @@ class Block {
     do {
       nonce++;
       timestamp = Date.now();
+      difficulty = Block.adjustDifficulty(lastBlock, timestamp);
       hash = Block.hash(timestamp, lastHash, data, nonce);
-    } while (hash.substring(0, DIFFICULTY) !== '0'.repeat(DIFFICULTY));
+    } while (hash.substring(0, difficulty) !== '0'.repeat(difficulty));
 
-    return new this(timestamp, lastHash, hash, data, nonce);
+    return new this(timestamp, lastHash, hash, data, nonce, difficulty);
   }
 
   //This function will represent the unique data we want to generate the hash for
-  static hash(timestamp, lastHash, data, nonce){
-    return SHA256(`${timestamp}${lastHash}${data}${nonce}`).toString();
+  static hash(timestamp, lastHash, data, nonce, difficulty){
+    return SHA256(`${timestamp}${lastHash}${data}${nonce}${difficulty}`).toString();
   }
 
   //returns a generated hash for the current block based on the block implementation
   static blockHash(block) {
     //grab all values needed to generate hash
-    const {timestamp, lastHash, data, nonce} = block;
-    return Block.hash(timestamp, lastHash, data, nonce);
+    const {timestamp, lastHash, data, nonce, difficulty} = block;
+    return Block.hash(timestamp, lastHash, data, nonce, difficulty);
   }
 }
 
